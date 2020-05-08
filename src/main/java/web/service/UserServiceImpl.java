@@ -10,14 +10,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import web.dao.RoleDao;
 import web.dao.UserDao;
 import web.model.Role;
 import web.model.User;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -27,11 +25,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserDao userDao;
 
     @Autowired
+    @Qualifier("roleDaoImpl")
+    private RoleDao roleDao;
+
+    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
     @Override
     public void add(User user) {
+        user.setRole(setUser(user));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userDao.add(user);
     }
@@ -51,6 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void updateUser(User user) {
+        user.setRole(setUser(user));
         userDao.updateUser(user);
     }
 
@@ -72,6 +76,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDao.deleteUser(id);
     }
 
+    List<Role> setUser (User user) {
+        List<Role> list = new ArrayList<>();
+        for (int i = 0; i < user.getRole().size(); i++) {
+            list.add(roleDao.findByName(user.getRole().get(i).getName()));
+        }
+        return list;
+    }
+
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -81,4 +93,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         return user;
     }
+
 }

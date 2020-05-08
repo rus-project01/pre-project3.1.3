@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.dao.RoleDao;
-import web.dao.UserDao;
+
 import web.model.Role;
 import web.model.User;
 
@@ -32,7 +32,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     @Override
-    public List<Role> findByName(String role) {
+    public Role findByName(String role) {
         return roleDao.findByName(role);
     }
 

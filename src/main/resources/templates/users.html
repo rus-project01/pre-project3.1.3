@@ -274,7 +274,9 @@
                                         <td th:text="${users.name}"></td>
                                         <td th:text="${users.street}"></td>
                                         <td th:text="${users.age}"></td>
-                                        <td th:text="${users.role.get(0).name}"></td>
+                                        <td>
+                                            <th:block th:each="usRole: ${users.role}" th:text="${usRole.name}"/>
+                                        </td>
                                         <td>
                                             <button type="button" id="editButFor" class="btn btn-info btn-lg btn-sm" data-toggle="modal" data-target="#editMod" data- th:attrappend="data-target=${users.id}">Edit</button>
                                         </td>
